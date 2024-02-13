@@ -13,9 +13,6 @@ const Board = (function () {
         if(domBoard.children[index].innerText === ""){
         domBoard.children[index].innerText = player
     }
-    else {
-        console.log("Cell is full")
-    }
 }
     const clearBoard = () => {
         while(domBoard.firstChild){
@@ -28,8 +25,8 @@ const Board = (function () {
         }
         const cells = document.querySelectorAll(".cell")
         cells.forEach((cell, index) => cell.addEventListener("click", () => game.playRound(index), {once: true}))
+        game.getAmountOfPlays() = 0
     }
-
      return { 
         getGameBoard,
         putSign,
@@ -38,29 +35,33 @@ const Board = (function () {
 
 })();
 
-
-
-
- //   function addPlayers(player1, player2) {
-   //     const signPlayerOne = "O"
-     //   const signPlayerTwo = (signPlayerOne == "O") ? "X" : "O"
-     //   const playerOne = new Player (player1, signPlayerOne)
-     //   const playerTwo = new Player (player2, signPlayerTwo)
-     //   Board.printBoard()
-     //   return console.log({playerOne, playerTwo})
-   //  }
-  
-
    const game = (function () {
     const gameBoard = Board.getGameBoard();
     let amountOfPlays = 0
+    let playerOne
+    let playerTwo
+
     function Player(name, sign){
         this.name = name;
         this.sign = sign;
-    }
+      }
+    
+    const nameSubmit = document.querySelector(".submit")
+    const nameSubmissionForm = document.querySelector(".namesubmission")
 
-    let playerOne = new Player("Player 1", "O");
-    let playerTwo = new Player("Player 2", "X");
+    nameSubmit.addEventListener("click", function () {
+        nameSubmissionForm.classList.add("hidden")
+        submitNames()
+    })
+
+    function submitNames() {
+        const namePlayerOne = document.querySelector(".name1").value;
+        const namePlayerTwo = document.querySelector(".name2").value;
+        playerOne = new Player(namePlayerOne, "X")
+        playerTwo = new Player(namePlayerTwo, "O")
+        console.log(playerOne)
+    }
+   
     let currentPlayer = playerOne
 
     function switchPlayers() {
@@ -68,16 +69,13 @@ const Board = (function () {
     }
 
     const getCurrentPlayer = () => currentPlayer;
-    let getAmountOfPlays = () => amountOfPlays;
+    const getAmountOfPlays = () => amountOfPlays;
     const newRound = () => {
         const messageText = document.querySelector(".message")
         messageText.innerText = `${getCurrentPlayer().name}'s turn`
     };
 
     const playRound = (index) => {
-        console.log(
-            `Putting ${getCurrentPlayer().name}'s sign into cell ${index}`
-        );
         Board.putSign(index, getCurrentPlayer().sign);
         amountOfPlays++
         checkWin()
@@ -95,27 +93,26 @@ const Board = (function () {
         for (const winCondition of WINNINGCOMBINATIONS) {
             let [a, b, c] = winCondition;
             if (gameBoard[a].innerText !== "" && gameBoard[a].innerText == gameBoard[b].innerText && gameBoard[a].innerText== gameBoard[c].innerText) {
-                Board.clearBoard()
-                amountOfPlays = 0
-                return alert(`${getCurrentPlayer().name} wins!`);
+                return alert(`${getCurrentPlayer().name} wins!`)
             }
         }
-
         if (amountOfPlays === 9){
-            Board.clearBoard()
-            amountOfPlays = 0
             return alert(`Its a draw`)
         }
         else {
-            return alert(`No winner yet`)
+            return
         }
     }
+    const restartButton = document.querySelector(".restart")
+    restartButton.addEventListener("click", Board.clearBoard)
+
     return {
         checkWin,
         playRound,
         getAmountOfPlays
     };
 })();
+
 
 const cells = document.querySelectorAll(".cell")
 cells.forEach((cell, index) => cell.addEventListener("click", () => game.playRound(index), {once: true}))
