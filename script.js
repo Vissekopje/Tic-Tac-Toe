@@ -1,58 +1,38 @@
-
-
-function Cell() {
-    let value = ""
-
-    const addSign = (currentPlayer) => {
-        value = currentPlayer
-    };
-
-    const getValue = () => value
-
-    return{
-        addSign,
-        getValue
-    };
-}
 const Board = (function () {
-    let gameBoard = []
-    // create 3 by 3 grid
-    for (let i = 0; i < 3; i++){
-        gameBoard[i] = []
-        for (let j = 0; j < 3; j++){
-            gameBoard[i].push(Cell())
+    const domBoard = document.querySelector(".board")
+    // create 9 cells
+    for (let j = 0; j < 9; j++){
+            const cells = document.createElement("div")
+            cells.classList.add("cell")
+            domBoard.appendChild(cells)
         }
-    }
-    const getGameBoard = () => gameBoard;
+    
+    const getGameBoard = () => domBoard.children;
 
-    const putSign = (row, column, player) => {
-        if(gameBoard[row][column].getValue() === ""){
-        gameBoard[row][column].addSign(player)
-        game.checkWin()
+    const putSign = (index, player) => {
+        if(domBoard.children[index].innerText === ""){
+        domBoard.children[index].innerText = player
     }
     else {
         console.log("Cell is full")
     }
 }
-    const printBoard = () => {
-        const boardWithCellValues = gameBoard.map((row) => row.map((cell) => cell.getValue()))
-        console.log(boardWithCellValues);
-      }
-
     const clearBoard = () => {
-        for (let i = 0; i < 3; i++){
-            gameBoard[i] = []
-            for (let j = 0; j < 3; j++){
-                gameBoard[i][j] = Cell()
-            }
+        while(domBoard.firstChild){
+            domBoard.removeChild(domBoard.lastChild)
         }
-        printBoard()
+        for (let i = 0; i < 9; i++){
+            const cells = document.createElement("div")
+            cells.classList.add("cell")
+            domBoard.appendChild(cells)
+        }
+        const cells = document.querySelectorAll(".cell")
+        cells.forEach((cell, index) => cell.addEventListener("click", () => game.playRound(index), {once: true}))
     }
 
      return { 
         getGameBoard,
         putSign,
-        printBoard,
         clearBoard
      }
 
@@ -73,11 +53,12 @@ const Board = (function () {
 
    const game = (function () {
     const gameBoard = Board.getGameBoard();
-
+    let amountOfPlays = 0
     function Player(name, sign){
         this.name = name;
         this.sign = sign;
     }
+
     let playerOne = new Player("Player 1", "O");
     let playerTwo = new Player("Player 2", "X");
     let currentPlayer = playerOne
@@ -87,47 +68,54 @@ const Board = (function () {
     }
 
     const getCurrentPlayer = () => currentPlayer;
-
+    let getAmountOfPlays = () => amountOfPlays;
     const newRound = () => {
-        Board.printBoard();
-        console.log(`${getCurrentPlayer().name}'s turn`);
+        const messageText = document.querySelector(".message")
+        messageText.innerText = `${getCurrentPlayer().name}'s turn`
     };
 
-    const playRound = (row, column) => {
+    const playRound = (index) => {
         console.log(
-            `Putting ${getCurrentPlayer().name}'s sign into row ${row} and column ${column}`
+            `Putting ${getCurrentPlayer().name}'s sign into cell ${index}`
         );
-        Board.putSign(row, column, getCurrentPlayer().sign);
-
+        Board.putSign(index, getCurrentPlayer().sign);
+        amountOfPlays++
+        checkWin()
         switchPlayers();
         newRound();
     };
 
     function checkWin() {
-        const WINNINGCOMBINATIONS = [
-        [[0,0],[1,1],[2,2]], 
-        [[0,0],[1,0],[2,0]],
-        [[0,1],[1,1],[2,1]],
-        [[0,2],[1,2],[2,2]], 
-        [[0,0],[0,1],[0,2]], 
-        [[1,0],[1,1],[1,2]],
-        [[2,0],[2,1],[2,2]], 
-        [[0,2],[1,1],[2,0]]
-    ];
-        for (const win of WINNINGCOMBINATIONS) {
-            let [[a, b],[c, d],[e, f]] = win;
-            if (gameBoard[a][b].getValue() !== "" 
-            && gameBoard[a][b].getValue() === gameBoard[c][d].getValue() 
-            && gameBoard[a][b].getValue() === gameBoard[e][f].getValue()) {
+        const WINNINGCOMBINATIONS = 
+        [[0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]
+        ]
+
+        for (const winCondition of WINNINGCOMBINATIONS) {
+            let [a, b, c] = winCondition;
+            if (gameBoard[a].innerText !== "" && gameBoard[a].innerText == gameBoard[b].innerText && gameBoard[a].innerText== gameBoard[c].innerText) {
                 Board.clearBoard()
+                amountOfPlays = 0
                 return alert(`${getCurrentPlayer().name} wins!`);
             }
         }
-        return alert("No winner yet!");
-    }
 
+        if (amountOfPlays === 9){
+            Board.clearBoard()
+            amountOfPlays = 0
+            return alert(`Its a draw`)
+        }
+        else {
+            return alert(`No winner yet`)
+        }
+    }
     return {
         checkWin,
-        playRound
+        playRound,
+        getAmountOfPlays
     };
 })();
+
+const cells = document.querySelectorAll(".cell")
+cells.forEach((cell, index) => cell.addEventListener("click", () => game.playRound(index), {once: true}))
