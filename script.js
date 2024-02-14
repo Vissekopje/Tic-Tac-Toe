@@ -23,9 +23,8 @@ const Board = (function () {
             cells.classList.add("cell")
             domBoard.appendChild(cells)
         }
-        const cells = document.querySelectorAll(".cell")
-        cells.forEach((cell, index) => cell.addEventListener("click", () => game.playRound(index), {once: true}))
-        game.getAmountOfPlays() = 0
+        events.initializeCells()
+        game.resetPlays()
     }
      return { 
         getGameBoard,
@@ -40,29 +39,30 @@ const Board = (function () {
     let amountOfPlays = 0
     let playerOne
     let playerTwo
+    let currentPlayer
 
     function Player(name, sign){
         this.name = name;
         this.sign = sign;
       }
     
-    const nameSubmit = document.querySelector(".submit")
-    const nameSubmissionForm = document.querySelector(".namesubmission")
-
-    nameSubmit.addEventListener("click", function () {
-        nameSubmissionForm.classList.add("hidden")
-        submitNames()
-    })
-
     function submitNames() {
         const namePlayerOne = document.querySelector(".name1").value;
         const namePlayerTwo = document.querySelector(".name2").value;
         playerOne = new Player(namePlayerOne, "X")
         playerTwo = new Player(namePlayerTwo, "O")
-        console.log(playerOne)
+        currentPlayer = playerOne
+        events.initializeCells()
+        newRound()
+        return [playerOne, playerTwo]
     }
-   
-    let currentPlayer = playerOne
+
+    const resetPlays = () => amountOfPlays = 0
+
+    const newRound = () => {
+        const messageText = document.querySelector(".message")
+        messageText.innerText = `${getCurrentPlayer().name}'s turn`
+    };
 
     function switchPlayers() {
         currentPlayer = (currentPlayer === playerOne) ? playerTwo : playerOne;
@@ -70,17 +70,14 @@ const Board = (function () {
 
     const getCurrentPlayer = () => currentPlayer;
     const getAmountOfPlays = () => amountOfPlays;
-    const newRound = () => {
-        const messageText = document.querySelector(".message")
-        messageText.innerText = `${getCurrentPlayer().name}'s turn`
-    };
-
+   
     const playRound = (index) => {
         Board.putSign(index, getCurrentPlayer().sign);
         amountOfPlays++
         checkWin()
         switchPlayers();
         newRound();
+        console.log(amountOfPlays)
     };
 
     function checkWin() {
@@ -103,16 +100,32 @@ const Board = (function () {
             return
         }
     }
-    const restartButton = document.querySelector(".restart")
-    restartButton.addEventListener("click", Board.clearBoard)
 
     return {
         checkWin,
         playRound,
-        getAmountOfPlays
+        getAmountOfPlays,
+        submitNames,
+        resetPlays
     };
 })();
 
+const events = (function () {
+    const nameSubmit = document.querySelector(".submit")
+    const nameSubmissionForm = document.querySelector(".namesubmission")
 
-const cells = document.querySelectorAll(".cell")
-cells.forEach((cell, index) => cell.addEventListener("click", () => game.playRound(index), {once: true}))
+    nameSubmit.addEventListener("click", function () {
+        nameSubmissionForm.classList.add("hidden")
+        game.submitNames()
+    })
+    function initializeCells(){
+    const cells = document.querySelectorAll(".cell")
+    cells.forEach((cell, index) => cell.addEventListener("click", () => game.playRound(index), {once: true}))
+    }
+    const restartButton = document.querySelector(".restart")
+    restartButton.addEventListener("click", Board.clearBoard)
+
+    return {
+        initializeCells
+    }
+})();
