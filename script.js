@@ -34,7 +34,7 @@ const Board = (function () {
 
 })();
 
-   const game = (function () {
+const game = (function () {
     const gameBoard = Board.getGameBoard();
     let amountOfPlays = 0
     let playerOne
