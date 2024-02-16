@@ -23,6 +23,8 @@ const Board = (function () {
             cells.classList.add("cell")
             domBoard.appendChild(cells)
         }
+        const messageText = document.querySelector(".message")
+        messageText.innerText = `${game.getCurrentPlayer().name}'s turn`
         events.initializeCells()
         game.resetPlays()
     }
@@ -75,8 +77,10 @@ const game = (function () {
         Board.putSign(index, getCurrentPlayer().sign);
         amountOfPlays++
         checkWin()
+        if(!checkWin()){
         switchPlayers();
         newRound();
+        }
         console.log(amountOfPlays)
     };
 
@@ -90,14 +94,17 @@ const game = (function () {
         for (const winCondition of WINNINGCOMBINATIONS) {
             let [a, b, c] = winCondition;
             if (gameBoard[a].innerText !== "" && gameBoard[a].innerText == gameBoard[b].innerText && gameBoard[a].innerText== gameBoard[c].innerText) {
-                return alert(`${getCurrentPlayer().name} wins!`)
+                const messageText = document.querySelector(".message")
+                events.disableCells()
+                return messageText.innerText = (`${getCurrentPlayer().name} wins!`)
             }
         }
         if (amountOfPlays === 9){
-            return alert(`Its a draw`)
+            const messageText = document.querySelector(".message")
+            return messageText.innerText = `Its a draw`
         }
         else {
-            return
+            return false
         }
     }
 
@@ -106,26 +113,36 @@ const game = (function () {
         playRound,
         getAmountOfPlays,
         submitNames,
-        resetPlays
+        resetPlays,
+        getCurrentPlayer
     };
 })();
 
 const events = (function () {
     const nameSubmit = document.querySelector(".submit")
     const nameSubmissionForm = document.querySelector(".namesubmission")
-
     nameSubmit.addEventListener("click", function () {
         nameSubmissionForm.classList.add("hidden")
         game.submitNames()
     })
+
+    function cellClicked(index){
+        game.playRound(index)
+    }
     function initializeCells(){
     const cells = document.querySelectorAll(".cell")
-    cells.forEach((cell, index) => cell.addEventListener("click", () => game.playRound(index), {once: true}))
+    cells.forEach((cell, index) => cell.addEventListener("click", () => cellClicked(index), {once: true}))
+    }
+    function disableCells(){
+        // Removing eventlistener by cloning as .removeEventListener did not suffice
+    const cells = document.querySelectorAll(".cell")
+    cells.forEach((cell) => {const clonedCell = cell.cloneNode(true); cell.parentNode.replaceChild(clonedCell, cell);});
     }
     const restartButton = document.querySelector(".restart")
     restartButton.addEventListener("click", Board.clearBoard)
 
     return {
-        initializeCells
+        initializeCells,
+        disableCells
     }
 })();
