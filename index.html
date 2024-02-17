@@ -8,13 +8,30 @@
 </head>
 <body>
     <header>
+        <h2>Tic-Tac-Toe</h2>
     </header>
     <div class="namesubmission">
-        <label for="name1">Player 1:</label>
-        <input type="text" class="name1">
-        <label for="name1">Player 2:</label>
-        <input type="text" class="name2">
-        <button class="submit">submit</button>
+        <h3>Tic-Tac-Toe</h3>
+        <form name="players">
+                <div class="form-row">
+                    <label for="name1">Player 1:</label>
+                    <input type="text" class="name1">
+                    <div class="radiowrap">
+                        <label for="icon1p1">Circles</label>
+                        <input type="radio" class="icon1p1" name="iconp1" value="O" checked>
+                        <label for="icon2p1">Crosses</label>
+                        <input type="radio" class="icon2p1" value="X" name="iconp1">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label for="name1">Player 2:</label>
+                    <input type="text" class="name2">
+                    <div class="iconp2">Crosses</div>
+                </div>
+        </form>
+        <div class="form-row">
+            <button class="submit">Submit</button>
+        </div>
     </div>
     <div class="message">Its X players turn</div>
     <div class="board"></div>

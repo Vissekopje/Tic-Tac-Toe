@@ -51,8 +51,10 @@ const game = (function () {
     function submitNames() {
         const namePlayerOne = document.querySelector(".name1").value;
         const namePlayerTwo = document.querySelector(".name2").value;
-        playerOne = new Player(namePlayerOne, "X")
-        playerTwo = new Player(namePlayerTwo, "O")
+        const iconPlayerOne = document.querySelector(`input[name="iconp1"]:checked`).value
+        const iconPlayerTwo = (iconPlayerOne === "X") ? "O" : "X"
+        playerOne = new Player(namePlayerOne, iconPlayerOne)
+        playerTwo = new Player(namePlayerTwo, iconPlayerTwo)
         currentPlayer = playerOne
         events.initializeCells()
         newRound()
@@ -125,10 +127,22 @@ const events = (function () {
         nameSubmissionForm.classList.add("hidden")
         game.submitNames()
     })
-
+ 
+    const radioIconsPlayers = document.getElementsByName("iconp1")
+    radioIconsPlayers.forEach(function(radioIcon){
+        radioIcon.addEventListener('click', function(){
+            const iconPlayerOne = document.querySelector(`input[name="iconp1"]:checked`).value
+            console.log(iconPlayerOne)
+            const iconPlayerTwoFill = document.querySelector(".iconp2")
+            iconPlayerTwoFill.innerText = (iconPlayerOne === "X") ? "Circles" : "Crosses"
+            console.log(iconPlayerTwoFill.innerText)
+            })
+        })
+     
     function cellClicked(index){
         game.playRound(index)
     }
+
     function initializeCells(){
     const cells = document.querySelectorAll(".cell")
     cells.forEach((cell, index) => cell.addEventListener("click", () => cellClicked(index), {once: true}))
