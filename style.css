@@ -1,5 +1,7 @@
-.body {
+body {
     z-index: 1;
+    background-color: rgba(89, 25, 150, 0.925);
+    color: white;
 }
 
 :root{
@@ -7,6 +9,47 @@
     --deep-purple: hsl(261, 89%, 17%);
     --hover-white: brightness(80%) invert(25%) hue-rotate(2deg) saturate(80%);
     --filter-white: invert(100%) sepia(0%) saturate(7451%) hue-rotate(48deg) brightness(100%) contrast(93%);
+}
+
+header{
+    display: flex;
+    justify-content: center;
+    align-content: center; 
+    font-size: 25px;
+}
+header a{
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 20px;
+    align-items: center;
+    display: flex;
+    gap: 10px;
+    padding-left: 20px;
+}
+header img{
+    align-self: center;
+    filter: var(--filter-white);
+}
+.names{
+    display: flex;
+    justify-content: center;
+    align-content: center; 
+    padding-bottom: 15px;
+    font-size: 22px;
+}
+.score {
+    display: flex;
+    justify-content: center;
+    align-content: center; 
+    font-size: 30px;
+    padding-bottom: 15px;
+}
+.message{
+    display: flex;
+    justify-content: center;
+    align-content: center; 
+    padding-top: 15px;
+    font-size: 22px;
 }
 .board{
     display: grid;
@@ -18,19 +61,37 @@
 .cell{
     width: 100px;
     height: 100px;
-    border: 1px solid black;
+    border: 2px solid white;
+    border-radius: 10px;
     font-size: 72px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
+.submissionwrapper {
+    background-color: var(--deep-purple);
+    z-index: 3;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    opacity: 0.96;
+}
 
+.submissionwrapper.hidden{
+    display: none;
+}
 .form-row{
     display: flex;
     gap: 15px;
     padding-bottom: 15px;
 }
-.form-row button{
+button{
     background-color: var(--deep-purple);
     color: white;
     border-radius: 25px;
@@ -39,6 +100,15 @@
     font-size: 20px;
     box-shadow: var(--card-shadow);
     gap: 15px;
+}
+button:hover{
+    background-color: #3730a3;
+}
+.popup{
+    display: flex;
+    justify-content: center;
+    align-content: center; 
+    padding-top: 25px;
 }
 
 .namesubmission {

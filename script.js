@@ -42,7 +42,8 @@ const game = (function () {
     let playerOne
     let playerTwo
     let currentPlayer
-
+    let playerOneScore = 0
+    let playerTwoScore = 0
     function Player(name, sign){
         this.name = name;
         this.sign = sign;
@@ -55,6 +56,8 @@ const game = (function () {
         const iconPlayerTwo = (iconPlayerOne === "X") ? "O" : "X"
         playerOne = new Player(namePlayerOne, iconPlayerOne)
         playerTwo = new Player(namePlayerTwo, iconPlayerTwo)
+        const playerNames = document.querySelector(".names")
+        playerNames.innerText = (`${playerOne.name} vs ${playerTwo.name}`)
         currentPlayer = playerOne
         events.initializeCells()
         newRound()
@@ -78,12 +81,10 @@ const game = (function () {
     const playRound = (index) => {
         Board.putSign(index, getCurrentPlayer().sign);
         amountOfPlays++
-        checkWin()
         if(!checkWin()){
         switchPlayers();
         newRound();
         }
-        console.log(amountOfPlays)
     };
 
     function checkWin() {
@@ -98,9 +99,19 @@ const game = (function () {
             if (gameBoard[a].innerText !== "" && gameBoard[a].innerText == gameBoard[b].innerText && gameBoard[a].innerText== gameBoard[c].innerText) {
                 const messageText = document.querySelector(".message")
                 events.disableCells()
+                if(currentPlayer === playerOne){
+                    playerOneScore++ 
+                 } 
+                else {
+                    playerTwoScore++
+                }
+                console.log(playerOneScore)
+                console.log(playerTwoScore)
+                const playerScores = document.querySelector(".score")
+                playerScores.innerText = (`${playerOneScore} - ${playerTwoScore}`)
                 return messageText.innerText = (`${getCurrentPlayer().name} wins!`)
-            }
         }
+    }
         if (amountOfPlays === 9){
             const messageText = document.querySelector(".message")
             return messageText.innerText = `Its a draw`
@@ -123,8 +134,10 @@ const game = (function () {
 const events = (function () {
     const nameSubmit = document.querySelector(".submit")
     const nameSubmissionForm = document.querySelector(".namesubmission")
+    const submissionWrapper = document.querySelector(".submissionwrapper")
     nameSubmit.addEventListener("click", function () {
         nameSubmissionForm.classList.add("hidden")
+        submissionWrapper.classList.add("hidden")
         game.submitNames()
     })
  
@@ -132,10 +145,8 @@ const events = (function () {
     radioIconsPlayers.forEach(function(radioIcon){
         radioIcon.addEventListener('click', function(){
             const iconPlayerOne = document.querySelector(`input[name="iconp1"]:checked`).value
-            console.log(iconPlayerOne)
             const iconPlayerTwoFill = document.querySelector(".iconp2")
             iconPlayerTwoFill.innerText = (iconPlayerOne === "X") ? "Circles" : "Crosses"
-            console.log(iconPlayerTwoFill.innerText)
             })
         })
      

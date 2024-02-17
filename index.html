@@ -8,11 +8,15 @@
 </head>
 <body>
     <header>
-        <h2>Tic-Tac-Toe</h2>
+        <a href="#">
+            <img src="images/chess-queen.svg" alt="Queen Icon" height="35">
+            <h2>Tic-Tac-Toe</h2>
+        </a>
     </header>
+    <div class="submissionwrapper">
     <div class="namesubmission">
         <h3>Tic-Tac-Toe</h3>
-        <form name="players">
+        <form class="players" name="players">
                 <div class="form-row">
                     <label for="name1">Player 1:</label>
                     <input type="text" class="name1">
@@ -33,10 +37,12 @@
             <button class="submit">Submit</button>
         </div>
     </div>
-    <div class="message">Its X players turn</div>
+</div>
+    <div class="names"></div>
+    <div class="score">0-0</div>
     <div class="board"></div>
+    <div class="message">Its X players turn</div>
     <div class="popup">
-        <div class="ending-message"></div>
         <button class="restart">Restart</button>
     </div>
     <footer>
